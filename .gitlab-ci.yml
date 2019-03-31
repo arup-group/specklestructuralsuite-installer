@@ -1,0 +1,42 @@
+build:
+  variables:
+    TOKEN: "LtiBS-yyViykX69rtq1Q" # MAKE YOUR OWN TOKEN
+    SPECKLE_STRUCTURES: "https://gitlab.arup.com/api/v4/projects/tor_digital%2FSpeckleStructures/jobs/artifacts/dev/download?job=build"
+    SPECKLE_GSA: "https://gitlab.arup.com/api/v4/projects/tor_digital%2FSpeckleGSA/jobs/artifacts/dev/download?job=build"
+    SPECKLE_ETABS: "https://gitlab.arup.com/api/v4/projects/Mishael%2ENuh%2FSpeckleETABS/jobs/artifacts/dev/download?job=build"
+  stage: build
+  script:
+  # Setup environment
+  - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\Artifacts"
+  - [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  # Download SpeckleStructures
+  - Invoke-WebRequest -Uri "$env:SPECKLE_STRUCTURES" -OutFile "$env:CI_PROJECT_DIR\Artifacts\_SpeckleStructures.zip" -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"}
+  - 7z x -o"$env:CI_PROJECT_DIR\Artifacts" "$env:CI_PROJECT_DIR\Artifacts\_SpeckleStructures.zip" -r -aoa
+  - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleStructures"
+  - 7z x -o"$env:CI_PROJECT_DIR\SpeckleStructures" "$env:CI_PROJECT_DIR\Artifacts\SpeckleStructures-*.zip" -r -aoa
+  # Download SpeckleGSA
+  - Invoke-WebRequest -Uri "$env:SPECKLE_GSA" -OutFile "$env:CI_PROJECT_DIR\Artifacts\_SpeckleGSA.zip" -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"}
+  - 7z x -o"$env:CI_PROJECT_DIR\Artifacts" "$env:CI_PROJECT_DIR\Artifacts\_SpeckleGSA.zip" -r -aoa
+  - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleGSA"
+  - 7z x -o"$env:CI_PROJECT_DIR\SpeckleGSA" "$env:CI_PROJECT_DIR\Artifacts\SpeckleGSA-*.zip" -r -aoa
+  # Download SpeckleETABS
+  - Invoke-WebRequest -Uri "$env:SPECKLE_ETABS" -OutFile "$env:CI_PROJECT_DIR\Artifacts\_SpeckleETABS.zip" -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"}
+  - 7z x -o"$env:CI_PROJECT_DIR\Artifacts" "$env:CI_PROJECT_DIR\Artifacts\_SpeckleETABS.zip" -r -aoa
+  - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleETABS"
+  - 7z x -o"$env:CI_PROJECT_DIR\SpeckleETABS" "$env:CI_PROJECT_DIR\Artifacts\SpeckleETABS-*.zip" -r -aoa
+  # Excecute Inno
+  - iscc SpeckleInstaller.iss
+  artifacts:
+    name: "SpeckleGSA"
+    paths:
+    - "${CI_PROJECT_DIR}/*.zip"
+    expire_in: 6 mos 
+
+- 
+
+New-Item -ItemType directory -Path ".\Artifacts"
+Invoke-WebRequest -Uri "https://gitlab.arup.com/api/v4/projects/Mishael%2ENuh%2FSpeckleETABS/jobs/artifacts/dev/download?job=build" -OutFile ".\Artifacts\_SpeckleETABS.zip" -Headers @{"PRIVATE-TOKEN" = "LtiBS-yyViykX69rtq1Q"}
+
+7z x -o".\Artifacts" ".\Artifacts\_SpeckleStructures.zip" -r -aoa
+New-Item -ItemType directory -Path ".\SpeckleStructures222"
+7z x -o".\SpeckleStructures222" ".\Artifacts\SpeckleStructures-*.zip" -r -aoa
