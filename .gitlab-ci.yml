@@ -3,7 +3,7 @@ build:
     TOKEN: "LtiBS-yyViykX69rtq1Q" # MAKE YOUR OWN TOKEN
     SPECKLE_STRUCTURES: "https://gitlab.arup.com/api/v4/projects/tor_digital%2FSpeckleStructures/jobs/artifacts/master/download?job=build"
     SPECKLE_GSA: "https://gitlab.arup.com/api/v4/projects/tor_digital%2FSpeckleGSA/jobs/artifacts/master/download?job=build"
-    SPECKLE_ETABS: "https://gitlab.arup.com/api/v4/projects/Mishael%2ENuh%2FSpeckleETABS/jobs/artifacts/master/download?job=build"
+    SPECKLE_ETABS: "https://gitlab.arup.com/api/v4/projects/tor_digital%2FSpeckleETABS/jobs/artifacts/master/download?job=build"
   stage: build
   script:
   # Setup environment
