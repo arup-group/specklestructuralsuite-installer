@@ -2,9 +2,9 @@
 SpeckleStructuralSuite installer packages Speckle clients for structural software into an installer file.
 
 Included packages:
-- [SpeckleStructures](https://gitlab.arup.com/tor_digital/SpeckleStructures)
-- [SpeckleGSA](https://gitlab.arup.com/tor_digital/SpeckleGSA)
-- [SpeckleETABS](https://gitlab.arup.com/tor_digital/SpeckleETABS)
+- [SpeckleStructures](https://gitlab.arup.com/speckle/SpeckleStructures)
+- [SpeckleGSA](https://gitlab.arup.com/speckle/SpeckleGSA)
+- [SpeckleETABS](https://gitlab.arup.com/speckle/SpeckleETABS)
 
 ## Contents
 
@@ -24,7 +24,7 @@ Included packages:
 
 ## Installation
 
-Latest build can be downloaded [here](https://gitlab.arup.com/tor_digital/specklestructuralsuite-installer/-/jobs/artifacts/master/raw/SpeckleStructuralSuite.exe?job=build).
+Latest build can be downloaded [here](https://gitlab.arup.com/speckle/specklestructuralsuite-installer/-/jobs/artifacts/master/raw/SpeckleStructuralSuite.exe?job=build).
 
 ## About Speckle
 
