@@ -1,8 +1,6 @@
-job:
+build:
   except:
     - tags
-
-build:
   variables:
     TOKEN: "LtiBS-yyViykX69rtq1Q" # MAKE YOUR OWN TOKEN
     VERSION: "0.9.0.$CI_JOB_ID"
