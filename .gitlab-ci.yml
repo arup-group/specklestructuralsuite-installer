@@ -1,3 +1,7 @@
+job:
+  except:
+    - tags
+
 build:
   variables:
     TOKEN: "LtiBS-yyViykX69rtq1Q" # MAKE YOUR OWN TOKEN
