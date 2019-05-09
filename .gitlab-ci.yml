@@ -28,7 +28,7 @@ build:
   - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleETABS"
   - 7z x -o"$env:CI_PROJECT_DIR\SpeckleETABS" "$env:CI_PROJECT_DIR\Artifacts\SpeckleETABS-*.zip" -r -aoa
   # Excecute Inno
-  - iscc /dMyAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
+  - iscc /dAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
   # Upload release
   - $params = @{name = "SpeckleStructuralSuite"; tag_name = "$env:VERSION"; description = "Latest release"; assets = @{links = @(@{name = "download"; url = "$env:ARTIFACT_LINK"}) } }
   - Invoke-WebRequest -Uri "$env:SPECKLE_ETABS" -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body $params
