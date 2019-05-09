@@ -31,7 +31,7 @@ build:
   - iscc /dAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
   # Upload release
   - $params = @{name = "SpeckleStructuralSuite"; tag_name = "$env:VERSION"; description = "Latest release"; assets = @{links = @(@{name = "download"; url = "$env:ARTIFACT_LINK"}) } }
-  - Invoke-WebRequest -Uri "$env:SPECKLE_ETABS" -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body $params
+  - Invoke-WebRequest -Uri "$env:RELEASE" -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body $params
   artifacts:
     name: "SpeckleStructuralSuite"
     paths:
