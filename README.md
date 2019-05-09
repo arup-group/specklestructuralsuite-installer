@@ -24,7 +24,7 @@ Included packages:
 
 ## Installation
 
-Latest build can be downloaded [here](https://gitlab.arup.com/speckle/specklestructuralsuite-installer/-/jobs/artifacts/master/raw/SpeckleStructuralSuite.exe?job=build).
+Latest build can be downloaded [here](https://gitlab.arup.com/speckle/specklestructuralsuite-installer/releases).
 
 ## About Speckle
 
