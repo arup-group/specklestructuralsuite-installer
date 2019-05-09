@@ -1,5 +1,5 @@
 #define AppName "SpeckleStructuralSuite"
-#define AppVersion "0.6.0.1"
+#define AppVersion {#MyAppVersion}
 #define GsaVersion GetFileVersion("SpeckleGSA\SpeckleGSA.dll")
 #define EtabsVersion GetFileVersion("SpeckleETABS\SpeckleETABS2017.dll")
 #define StructuresVersion GetFileVersion("SpeckleStructures\SpeckleStructures.dll")

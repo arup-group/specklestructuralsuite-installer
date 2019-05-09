@@ -1,9 +1,12 @@
 build:
   variables:
     TOKEN: "LtiBS-yyViykX69rtq1Q" # MAKE YOUR OWN TOKEN
+    VERSION: "0.9.0.$CI_JOB_ID"
     SPECKLE_STRUCTURES: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleStructures/jobs/artifacts/master/download?job=build"
     SPECKLE_GSA: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleGSA/jobs/artifacts/master/download?job=build"
     SPECKLE_ETABS: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleETABS/jobs/artifacts/master/download?job=build"
+    RELEASE: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/releases"
+    ARTIFACT_LINK: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/jobs/$CI_JOB_ID/artifacts/SpeckleStructuralSuite.exe"
   stage: build
   script:
   # Setup environment
@@ -25,7 +28,10 @@ build:
   - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleETABS"
   - 7z x -o"$env:CI_PROJECT_DIR\SpeckleETABS" "$env:CI_PROJECT_DIR\Artifacts\SpeckleETABS-*.zip" -r -aoa
   # Excecute Inno
-  - iscc SpeckleStructuralSuiteInstaller.iss
+  - iscc /dMyAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
+  # Upload release
+  - $params = @{name = "SpeckleStructuralSuite"; tag_name = "$env:VERSION"; description = "Latest release"; assets = @{links = @(@{name = "download"; url = "$env:ARTIFACT_LINK"}) } }
+  - Invoke-WebRequest -Uri "$env:SPECKLE_ETABS" -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body $params
   artifacts:
     name: "SpeckleStructuralSuite"
     paths:
