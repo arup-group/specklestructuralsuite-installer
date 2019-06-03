@@ -3,8 +3,7 @@ build:
     - tags
   variables:
     TOKEN: "LtiBS-yyViykX69rtq1Q" # MAKE YOUR OWN TOKEN
-    VERSION: "0.9.0.$CI_JOB_ID"
-    SPECKLE_STRUCTURES: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleStructures/jobs/artifacts/master/download?job=build"
+    VERSION: "0.10.0.$CI_JOB_ID"
     SPECKLE_GSA: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleGSA/jobs/artifacts/master/download?job=build"
     SPECKLE_ETABS: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleETABS/jobs/artifacts/master/download?job=build"
     RELEASE: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/releases"
@@ -14,11 +13,6 @@ build:
   # Setup environment
   - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\Artifacts"
   - Invoke-Expression "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12"
-  # Download SpeckleStructures
-  - Invoke-WebRequest -Uri "$env:SPECKLE_STRUCTURES" -OutFile "$env:CI_PROJECT_DIR\Artifacts\_SpeckleStructures.zip" -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"}
-  - 7z x -o"$env:CI_PROJECT_DIR\Artifacts" "$env:CI_PROJECT_DIR\Artifacts\_SpeckleStructures.zip" -r -aoa
-  - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleStructures"
-  - 7z x -o"$env:CI_PROJECT_DIR\SpeckleStructures" "$env:CI_PROJECT_DIR\Artifacts\SpeckleStructures-*.zip" -r -aoa
   # Download SpeckleGSA
   - Invoke-WebRequest -Uri "$env:SPECKLE_GSA" -OutFile "$env:CI_PROJECT_DIR\Artifacts\_SpeckleGSA.zip" -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"}
   - 7z x -o"$env:CI_PROJECT_DIR\Artifacts" "$env:CI_PROJECT_DIR\Artifacts\_SpeckleGSA.zip" -r -aoa

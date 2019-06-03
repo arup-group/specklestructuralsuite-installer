@@ -1,10 +1,10 @@
 #define AppName "SpeckleStructuralSuite"
 #define GsaVersion GetFileVersion("SpeckleGSA\SpeckleGSA.dll")
 #define EtabsVersion GetFileVersion("SpeckleETABS\SpeckleETABS2017.dll")
-#define StructuresVersion GetFileVersion("SpeckleStructures\SpeckleStructures.dll")
 #define AppPublisher "Speckle"
 #define AppURL "http://torstrweb01/SpeckleGSA/"
 #define SpeckleFolder "{localappdata}\Speckle"
+#define SpeckleStructuralSuiteFolder "{localappdata}\SpeckleStructuralSuite"
 #define AppExeName "SpeckleStructuralSuite.exe"
 #define ETABSSettings "{localappdata}\Computers and Structures\ETABS 17\ETABS.ini"
 
@@ -17,7 +17,7 @@ AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
-DefaultDirName={#SpeckleFolder}
+DefaultDirName={#SpeckleStructuralSuiteFolder}
 DisableDirPage=yes
 DefaultGroupName={#AppName}
 DisableProgramGroupPage=yes
@@ -38,7 +38,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Components]
 Name: gsa; Description: Speckle for GSA 10 - v{#GsaVersion}; Types: full
 Name: etabs; Description: Speckle for ETABS 2017 - v{#EtabsVersion}; Types: full
-Name: structures; Description: Speckle structural object model - v{#StructuresVersion}; Types: full  
 
 [Types]
 Name: "full"; Description: "Full installation"
@@ -53,10 +52,6 @@ Source: "SpeckleGSA\*"; DestDir: "{localappdata}\SpeckleGSA"; Flags: ignoreversi
 
 ;etabs
 Source: "SpeckleETABS\*"; DestDir: "{localappdata}\SpeckleETABS"; Flags: ignoreversion recursesubdirs; Components: etabs
-
-;structures
-Source: "SpeckleStructures\*"; DestDir: "{localappdata}\SpeckleKits\SpeckleStructures"; Flags: ignoreversion recursesubdirs; Components: structures
-  
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
@@ -165,6 +160,48 @@ begin
         result := false;
 end;
 
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+// Return Values:
+// 1 - uninstall string is empty
+// 2 - error executing the UnInstallString
+// 3 - successfully executed the UnInstallString
+
+  // default return value
+  Result := 0;
+
+  // get the uninstall string of the old app
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
 function InitializeSetup(): Boolean;
 var
     ErrCode: integer;
@@ -202,10 +239,17 @@ var
   FileLines: TStringList;
 begin
   if CurStep = ssInstall then
-      if IsComponentSelected('etabs') then
-        MsgBox('SpeckleETABS is a highly experimental plugin which requires ETABS 2017.'#13#13
-            'It is assumed that ETABS 2017 is already installed.'#13
-            'NOT INTENDED FOR PROJECT USE', mbInformation, MB_OK);
+    begin
+        if IsComponentSelected('etabs') then
+          MsgBox('SpeckleETABS is a highly experimental plugin which requires ETABS 2017.'#13#13
+              'It is assumed that ETABS 2017 is already installed.'#13
+              'NOT INTENDED FOR PROJECT USE', mbInformation, MB_OK);
+        if (IsUpgrade()) then
+        begin
+          UnInstallOldVersion();
+        end;
+    end;
+
   if CurStep = ssPostInstall then
       if IsComponentSelected('etabs') then
         AddETABS();
