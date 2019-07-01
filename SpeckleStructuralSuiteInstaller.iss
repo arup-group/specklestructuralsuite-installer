@@ -1,12 +1,10 @@
 #define AppName "SpeckleStructuralSuite"
 #define GsaVersion GetFileVersion("SpeckleGSA\SpeckleGSA.dll")
-#define EtabsVersion GetFileVersion("SpeckleETABS\SpeckleETABS2017.dll")
 #define AppPublisher "Speckle"
 #define AppURL "http://torstrweb01/SpeckleGSA/"
 #define SpeckleFolder "{localappdata}\Speckle"
 #define SpeckleStructuralSuiteFolder "{localappdata}\SpeckleStructuralSuite"
 #define AppExeName "SpeckleStructuralSuite.exe"
-#define ETABSSettings "{localappdata}\Computers and Structures\ETABS 17\ETABS.ini"
 
 [Setup]
 AppId={{C1D0E622-B491-46BD-99ED-A6A516496CA8}
@@ -37,7 +35,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Components]
 Name: gsa; Description: Speckle for GSA 10 - v{#GsaVersion}; Types: full
-Name: etabs; Description: Speckle for ETABS 2017 - v{#EtabsVersion}; Types: full
 
 [Types]
 Name: "full"; Description: "Full installation"
@@ -49,9 +46,6 @@ Name: "{app}"; Permissions: everyone-full
 [Files]
 ;gsa
 Source: "SpeckleGSA\*"; DestDir: "{localappdata}\SpeckleGSA"; Flags: ignoreversion recursesubdirs; Components: gsa  
-
-;etabs
-Source: "SpeckleETABS\*"; DestDir: "{localappdata}\SpeckleETABS"; Flags: ignoreversion recursesubdirs; Components: etabs
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
@@ -120,44 +114,6 @@ end;
 function IsSpeckleInstalled(): boolean;
 begin
   result := FileExists(ExpandConstant('{#SpeckleFolder}\SpeckleUpdater.exe'));
-end;
-
-function AddETABS(): Boolean;
-var
-    TempStringArr: TArrayOfString;
-    LineCount: Integer;
-    SectionLine: Integer;
-    FileLines: TArrayOfString;
-begin
-    if FileExists(ExpandConstant('{#ETABSSettings}')) then begin
-        if LoadStringsFromFile(ExpandConstant('{#ETABSSettings}'), FileLines) then begin
-          SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', '', false);
-          LineCount := GetArrayLength(FileLines);
-          for SectionLine := 0 to LineCount - 1 do
-          begin
-              SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', FileLines[SectionLine] + #13#10, true);
-              if FileLines[SectionLine] = '[PlugIn]' then begin
-                  SectionLine := SectionLine + 1;
-                  Explode(TempStringArr, FileLines[SectionLine], '=');
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', TempStringArr[0] + '=' + IntToStr(StrToInt(TempStringArr[1]) + 1) + #13#10, true);
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ' PlugInName=SpeckleETABS2017'#13#10, true);
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ' PlugInMenuText=SpeckleETABS2017'#13#10, true); 
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ExpandConstant(' PlugInPath={localappdata}\SpeckleETABS\SpeckleETABS2017.dll'#13#10), true);
-              end else begin
-                if FileLines[SectionLine] = ' PlugInName=SpeckleETABS2017' then begin
-                  DeleteFile(ExpandConstant('{#ETABSSettings}') + '.tmp');
-                  result := true;
-                  exit;
-                end;
-              end;
-          end;
-          DeleteFile(ExpandConstant('{#ETABSSettings}'));
-          RenameFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ExpandConstant('{#ETABSSettings}'));
-          result := true;
-        end else
-          result := false;
-    end else            
-        result := false;
 end;
 
 function GetUninstallString(): String;
@@ -240,17 +196,9 @@ var
 begin
   if CurStep = ssInstall then
     begin
-        if IsComponentSelected('etabs') then
-          MsgBox('SpeckleETABS is a highly experimental plugin which requires ETABS 2017.'#13#13
-              'It is assumed that ETABS 2017 is already installed.'#13
-              'NOT INTENDED FOR PROJECT USE', mbInformation, MB_OK);
         if (IsUpgrade()) then
         begin
           UnInstallOldVersion();
         end;
     end;
-
-  if CurStep = ssPostInstall then
-      if IsComponentSelected('etabs') then
-        AddETABS();
 end;

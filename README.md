@@ -3,7 +3,6 @@ SpeckleStructuralSuite installer packages Speckle clients for structural softwar
 
 Included packages:
 - [SpeckleGSA](https://gitlab.arup.com/speckle/SpeckleGSA)
-- [SpeckleETABS](https://gitlab.arup.com/speckle/SpeckleETABS)
 
 ## Contents
 
@@ -19,7 +18,6 @@ Included packages:
 
 - [Speckle](https://github.com/speckleworks/SpeckleInstaller/releases/latest)
 - GSA 10.0 for SpeckleGSA
-- ETABS2017 for SpeckleETABS
 
 ## Installation
 
