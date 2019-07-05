@@ -5,6 +5,7 @@ build:
     TOKEN: "LtiBS-yyViykX69rtq1Q" # MAKE YOUR OWN TOKEN
     VERSION: "0.10.0.$CI_JOB_ID"
     SPECKLE_GSA: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleGSA/jobs/artifacts/master/download?job=build"
+    SPECKLE_ETABS: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleETABS/jobs/artifacts/master/download?job=build"
     RELEASE: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/releases"
     ARTIFACT_LINK: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/jobs/$CI_JOB_ID/artifacts/SpeckleStructuralSuite.exe"
   stage: build
@@ -17,6 +18,11 @@ build:
   - 7z x -o"$env:CI_PROJECT_DIR\Artifacts" "$env:CI_PROJECT_DIR\Artifacts\_SpeckleGSA.zip" -r -aoa
   - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleGSA"
   - 7z x -o"$env:CI_PROJECT_DIR\SpeckleGSA" "$env:CI_PROJECT_DIR\Artifacts\SpeckleGSA-*.zip" -r -aoa
+  # Download SpeckleETABS
+  - Invoke-WebRequest -Uri "$env:SPECKLE_ETABS" -OutFile "$env:CI_PROJECT_DIR\Artifacts\_SpeckleETABS.zip" -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"}
+  - 7z x -o"$env:CI_PROJECT_DIR\Artifacts" "$env:CI_PROJECT_DIR\Artifacts\_SpeckleETABS.zip" -r -aoa
+  - New-Item -ItemType directory -Path "$env:CI_PROJECT_DIR\SpeckleETABS"
+  - 7z x -o"$env:CI_PROJECT_DIR\SpeckleETABS" "$env:CI_PROJECT_DIR\Artifacts\SpeckleETABS-*.zip" -r -aoa
   # Excecute Inno
   - iscc /dAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
   # Upload release
