@@ -1,12 +1,10 @@
 #define AppName "SpeckleStructuralSuite"
 #define GsaVersion GetFileVersion("SpeckleGSA\SpeckleGSA.dll")
-#define EtabsVersion GetFileVersion("SpeckleETABS\SpeckleETABS2017.dll")
 #define AppPublisher "Speckle"
 #define AppURL "http://torstrweb01/SpeckleGSA/"
 #define SpeckleFolder "{localappdata}\Speckle"
 #define SpeckleStructuralSuiteFolder "{localappdata}\SpeckleStructuralSuite"
 #define AppExeName "SpeckleStructuralSuite.exe"
-#define ETABSSettings "{localappdata}\Computers and Structures\ETABS 17\ETABS.ini"
 
 [Setup]
 AppId={{C1D0E622-B491-46BD-99ED-A6A516496CA8}
@@ -37,7 +35,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Components]
 Name: gsa; Description: Speckle for GSA 10 - v{#GsaVersion}; Types: full
-Name: etabs; Description: Speckle for ETABS 2017 - v{#EtabsVersion}; Types: full
 
 [Types]
 Name: "full"; Description: "Full installation"
@@ -49,9 +46,6 @@ Name: "{app}"; Permissions: everyone-full
 [Files]
 ;gsa
 Source: "SpeckleGSA\*"; DestDir: "{localappdata}\SpeckleGSA"; Flags: ignoreversion recursesubdirs; Components: gsa  
-
-;etabs
-Source: "SpeckleETABS\*"; DestDir: "{localappdata}\SpeckleETABS"; Flags: ignoreversion recursesubdirs; Components: etabs
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
@@ -240,17 +234,10 @@ var
 begin
   if CurStep = ssInstall then
     begin
-        if IsComponentSelected('etabs') then
-          MsgBox('SpeckleETABS is a highly experimental plugin which requires ETABS 2017.'#13#13
-              'It is assumed that ETABS 2017 is already installed.'#13
-              'NOT INTENDED FOR PROJECT USE', mbInformation, MB_OK);
         if (IsUpgrade()) then
         begin
           UnInstallOldVersion();
         end;
     end;
 
-  if CurStep = ssPostInstall then
-      if IsComponentSelected('etabs') then
-        AddETABS();
 end;
