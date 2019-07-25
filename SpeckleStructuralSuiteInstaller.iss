@@ -116,44 +116,6 @@ begin
   result := FileExists(ExpandConstant('{#SpeckleFolder}\SpeckleUpdater.exe'));
 end;
 
-function AddETABS(): Boolean;
-var
-    TempStringArr: TArrayOfString;
-    LineCount: Integer;
-    SectionLine: Integer;
-    FileLines: TArrayOfString;
-begin
-    if FileExists(ExpandConstant('{#ETABSSettings}')) then begin
-        if LoadStringsFromFile(ExpandConstant('{#ETABSSettings}'), FileLines) then begin
-          SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', '', false);
-          LineCount := GetArrayLength(FileLines);
-          for SectionLine := 0 to LineCount - 1 do
-          begin
-              SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', FileLines[SectionLine] + #13#10, true);
-              if FileLines[SectionLine] = '[PlugIn]' then begin
-                  SectionLine := SectionLine + 1;
-                  Explode(TempStringArr, FileLines[SectionLine], '=');
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', TempStringArr[0] + '=' + IntToStr(StrToInt(TempStringArr[1]) + 1) + #13#10, true);
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ' PlugInName=SpeckleETABS2017'#13#10, true);
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ' PlugInMenuText=SpeckleETABS2017'#13#10, true); 
-                  SaveStringToFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ExpandConstant(' PlugInPath={localappdata}\SpeckleETABS\SpeckleETABS2017.dll'#13#10), true);
-              end else begin
-                if FileLines[SectionLine] = ' PlugInName=SpeckleETABS2017' then begin
-                  DeleteFile(ExpandConstant('{#ETABSSettings}') + '.tmp');
-                  result := true;
-                  exit;
-                end;
-              end;
-          end;
-          DeleteFile(ExpandConstant('{#ETABSSettings}'));
-          RenameFile(ExpandConstant('{#ETABSSettings}') + '.tmp', ExpandConstant('{#ETABSSettings}'));
-          result := true;
-        end else
-          result := false;
-    end else            
-        result := false;
-end;
-
 function GetUninstallString(): String;
 var
   sUnInstPath: String;
