@@ -23,7 +23,14 @@ build:
   - Invoke-WebRequest -Uri "$env:SPECKLE_GEOMETRY_KIT" -OutFile "$env:CI_PROJECT_DIR\Artifacts\SpeckleCoreGeometry.zip"
   - 7z x -o"$env:CI_PROJECT_DIR\SpeckleCoreGeometry" "$env:CI_PROJECT_DIR\Artifacts\SpeckleCoreGeometry.zip" -r -aoa
   # Download SpeckleStructural
-  - Invoke-WebRequest -Uri "$env:SPECKLE_STRUCTURAL_KIT" -OutFile "$env:CI_PROJECT_DIR\Artifacts\SpeckleStructural.zip" 
+  - $apiUrl = 'https://ci.appveyor.com/api'
+  - $prjUrl = "$apiUrl/projects/speckleworks/specklestructural/branch/master"
+  - $project = Invoke-RestMethod -Method Get -Uri "$prjUrl"
+  - $jobId = $project.build.jobs[0].jobId
+  - $artifacts = Invoke-RestMethod -Method Get -Uri "$apiUrl/buildjobs/$jobId/artifacts"
+  - $artifact = $artifacts | Where name -eq "Release"
+  - $artifactFileName = $artifact.fileName
+  - Invoke-RestMethod -Method Get -Uri "$apiUrl/buildjobs/$jobId/artifacts/$artifactFileName" -OutFile "$env:CI_PROJECT_DIR\Artifacts\SpeckleStructural.zip" 
   - 7z x -o"$env:CI_PROJECT_DIR\SpeckleStructural" "$env:CI_PROJECT_DIR\Artifacts\SpeckleStructural.zip" -r -aoa
   # Excecute Inno
   - iscc /dAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
