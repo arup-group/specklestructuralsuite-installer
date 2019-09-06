@@ -42,6 +42,3 @@ build:
     paths:
     - "SpeckleStructuralSuite.exe"
     expire_in: 6 mos
-    
-    
-    Invoke-WebRequest -Uri "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleGSA/jobs/artifacts/master/download?job=build" -OutFile ".Artifacts\_SpeckleGSA.zip" -Headers @{"PRIVATE-TOKEN" = "LtiBS-yyViykX69rtq1Q"}
