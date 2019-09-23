@@ -35,8 +35,8 @@ build:
   # Excecute Inno
   - iscc /dAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
   # Upload release
-  - Invoke-WebRequest -Uri "$env:RELEASE" -UseBasicParsing -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body @{name = "SpeckleStructuralSuite"; tag_name = "$env:VERSION"; description = "Latest release"; ref = "$env:CI_COMMIT_SHA";}
-  - Invoke-WebRequest -Uri "$env:RELEASE/$env:VERSION/assets/links" -UseBasicParsing -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body @{name = "SpeckleStructuralSuite"; url = "$env:ARTIFACT_LINK";}
+  - Invoke-WebRequest -Uri "$env:RELEASE" -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body @{name = "SpeckleStructuralSuite"; tag_name = "$env:VERSION"; description = "Latest release"; ref = "$env:CI_COMMIT_SHA";}
+  - Invoke-WebRequest -Uri "$env:RELEASE/$env:VERSION/assets/links" -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body @{name = "SpeckleStructuralSuite"; url = "$env:ARTIFACT_LINK";}
   artifacts:
     name: "SpeckleStructuralSuite"
     paths:
