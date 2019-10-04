@@ -3,9 +3,8 @@ build:
     - tags
   variables:
     TOKEN: "YRsioS_uyoA6YjYBtEu1" # MAKE YOUR OWN TOKEN
-    VERSION: "0.10.0.$CI_JOB_ID"
+    VERSION: "0.11.0.$CI_JOB_ID"
     SPECKLE_GEOMETRY_KIT: "https://ci.appveyor.com/api/buildjobs/su30e3sovklimpr2/artifacts/SpeckleCoreGeometry.zip"
-    SPECKLE_STRUCTURAL_KIT: "https://ci.appveyor.com/api/buildjobs/0q6e27mbo4wn0yba/artifacts/SpeckleStructural-1.0.5.19.zip"
     SPECKLE_GSA: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleGSA/jobs/artifacts/master/download?job=build"
     RELEASE: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/releases"
     ARTIFACT_LINK: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/jobs/$CI_JOB_ID/artifacts/SpeckleStructuralSuite.exe"
