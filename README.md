@@ -23,6 +23,10 @@ Included packages:
 
 Latest build can be downloaded [here](https://gitlab.arup.com/speckle/specklestructuralsuite-installer/releases).
 
+Sometimes the downloaded installer mysteriously dissappears when you try to run 
+it, this is due to the antivirus software the Arup computers run. You can get around
+this by copying the installer to `C:\TEMP` and running it from there.
+
 ## About Speckle
 
 Speckle reimagines the design process from the Internet up: an open source (MIT) initiative for developing an extensible Design & AEC data communication protocol and platform. Contributions are welcome - we can't build this alone!
