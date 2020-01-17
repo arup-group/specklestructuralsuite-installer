@@ -31,6 +31,15 @@ this by copying the installer to `C:\TEMP` and running it from there.
 
 Speckle reimagines the design process from the Internet up: an open source (MIT) initiative for developing an extensible Design & AEC data communication protocol and platform. Contributions are welcome - we can't build this alone!
 
+## Release process
+
+- Update version in the .gitlab-ci.yml to the next version and commit locally to master
+- Push to master branch on origin
+- Trigger build (using one of the configured runners) at https://gitlab.arup.com/speckle/specklestructuralsuite-installer/pipelines
+- Check that the artefacts are available at https://gitlab.arup.com/speckle/specklestructuralsuite-installer/-/releases
+
+To view the runners, go to the CI/CD settings at https://gitlab.arup.com/speckle/specklestructuralsuite-installer/-/settings/ci_cd
+
 ## Notes
 
-SpeckleStructuralSuite installer is written and maintained by [Mishael Nuh](https://gitlab.arup.com/Mishael.Nuh).
+SpeckleStructuralSuite installer is maintained by [Nic Burgers](https://gitlab.arup.com/Nic.Burgers).
