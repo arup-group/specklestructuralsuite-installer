@@ -3,7 +3,8 @@ build:
     - tags
   variables:
     TOKEN: "YRsioS_uyoA6YjYBtEu1" # MAKE YOUR OWN TOKEN
-    VERSION: "0.13.5.$CI_JOB_ID"
+    VERSION_SHORT: "0.13.5"
+    VERSION: "$VERSION_SHORT.$CI_JOB_ID"
     SPECKLE_GEOMETRY_KIT: "https://ci.appveyor.com/api/buildjobs/su30e3sovklimpr2/artifacts/SpeckleCoreGeometry.zip"
     SPECKLE_GSA: "https://gitlab.arup.com/api/v4/projects/speckle%2FSpeckleGSA/jobs/artifacts/master/download?job=build"
     RELEASE: "https://gitlab.arup.com/api/v4/projects/speckle%2Fspecklestructuralsuite-installer/releases"
@@ -31,8 +32,8 @@ build:
   - $artifactFileName = $artifact.fileName
   - Invoke-RestMethod -Method Get -Uri "$apiUrl/buildjobs/$jobId/artifacts/$artifactFileName" -OutFile "$env:CI_PROJECT_DIR\Artifacts\SpeckleStructural.zip" 
   - 7z x -o"$env:CI_PROJECT_DIR\SpeckleStructural" "$env:CI_PROJECT_DIR\Artifacts\SpeckleStructural.zip" -r -aoa
-  # Excecute Inno
-  - iscc /dAppVersion="$env:VERSION" SpeckleStructuralSuiteInstaller.iss
+  # Excecute Inno - note there is an error which seems to be caused by part of the build number being more than 64k, so doing a remainder operation here
+  - iscc /dAppVersion="$env:VERSION_SHORT.$($env:CI_JOB_ID%65536)" SpeckleStructuralSuiteInstaller.iss
   # Upload release
   - Invoke-WebRequest -Uri "$env:RELEASE" -UseBasicParsing -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body @{name = "SpeckleStructuralSuite"; tag_name = "$env:VERSION"; description = "Latest release"; ref = "$env:CI_COMMIT_SHA";}
   - Invoke-WebRequest -Uri "$env:RELEASE/$env:VERSION/assets/links" -UseBasicParsing -Method POST -Headers @{"PRIVATE-TOKEN" = "$env:TOKEN"} -Body @{name = "SpeckleStructuralSuite"; url = "$env:ARTIFACT_LINK";}
