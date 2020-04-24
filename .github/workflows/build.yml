@@ -1,0 +1,123 @@
+on: 
+  push:
+    branches:
+      - 'master'
+    tags-ignore:
+      - '*.*'
+
+env:
+  INSTALLER_VERSION: 0.13.5
+
+jobs:
+  downloadSpeckleGSA:
+    name: Download SpeckleGSA
+    runs-on: windows-latest
+    steps:
+      - name: Download SpeckleGSA latest release
+        run: |
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          $assets_url = Invoke-RestMethod -Method Get -Headers @{"Authorization" = "token $env:GITHUB_TOKEN"} -Uri https://api.github.com/repos/arup-group/specklegsa/releases/latest | Select -Expand assets | Select -Expand url
+          Invoke-WebRequest -Headers @{"Authorization" = "token $env:GITHUB_TOKEN"; "accept" = "application/octet-stream"} -Uri $assets_url -OutFile SpeckleGSA.zip
+          7z x -o"$env:GITHUB_WORKSPACE\SpeckleGSA" "$env:GITHUB_WORKSPACE\SpeckleGSA.zip" -r -aoa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+
+      - name: Upload SpeckleGSA to build pipline
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: SpeckleGSA
+          path: 'SpeckleGSA'
+  
+  downloadSpeckleCoreGeometry:
+    name: Download the speckle core geometry from appveyor
+    runs-on: windows-latest
+    steps:
+      - name: Download SpeckleCoreGeometry latest release
+        run: |
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          $assets_url = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/speckleworks/SpeckleCoreGeometry/releases/latest | Select -Expand assets | Select -Expand url
+          Invoke-WebRequest -Headers @{"accept" = "application/octet-stream"} -Uri $assets_url -OutFile SpeckleCoreGeometry.zip
+          7z x -o"$env:GITHUB_WORKSPACE\SpeckleCoreGeometry" "$env:GITHUB_WORKSPACE\SpeckleCoreGeometry.zip" -r -aoa
+
+      - name: Upload SpeckleCoreGeometry to build pipeline
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: SpeckleCoreGeometry
+          path: 'SpeckleCoreGeometry'
+
+  downloadSpeckleStructural:
+    name: Download the latest build from speckle structural 
+    runs-on: windows-latest
+    steps:
+      - name: Download SpeckleCoreGeometry master branch
+        run: |
+          $jobId = Invoke-RestMethod -Method Get -Uri "$env:PROJECTS_URI" | Select -expand build | Select -Expand jobs | Select -Expand jobId
+          $artifact = Invoke-RestMethod -Method Get -Uri "$env:BUILD_JOBS_URI/$jobId/artifacts" 
+          $artifactName = $artifact | where name -eq "Release" | Select -Expand fileName
+          Invoke-WebRequest -Uri "$env:BUILD_JOBS_URI/$jobId/artifacts/$artifactName" -OutFile "$env:GITHUB_WORKSPACE\SpeckleStructural.zip"
+          7z x -o"$env:GITHUB_WORKSPACE\SpeckleStructural" "$env:GITHUB_WORKSPACE\SpeckleStructural.zip" -r -aoa 
+        env:
+          PROJECTS_URI: https://ci.appveyor.com/api/projects/speckleworks/specklestructural/branch/master
+          BUILD_JOBS_URI: https://ci.appveyor.com/api/buildjobs
+      
+      - name: Upload SpeckleStructural to build pipeline
+        uses: actions/upload-artifact@v2-preview
+        with:
+          name: SpeckleStructural
+          path: 'SpeckleStructural'
+  
+  createRelease:
+    name: Create the installer using iscc and Release
+    runs-on: windows-latest
+    needs: [downloadSpeckleGSA, downloadSpeckleCoreGeometry, downloadSpeckleStructural]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Download SpeckleGSA
+        uses: actions/download-artifact@v1
+        with:
+          name: SpeckleGSA
+
+      - name: Download SpeckleCoreGeometry
+        uses: actions/download-artifact@v1
+        with:
+          name: SpeckleCoreGeometry
+
+      - name: Download SpeckleStructural
+        uses: actions/download-artifact@v1
+        with:
+          name: SpeckleStructural
+
+      - name: Calculate tag version
+        id: calculate-tag-version
+        run: |
+          $tag = "$env:INSTALLER_VERSION.$($env:GITHUB_RUN_ID%65536)"
+          echo "::set-output name=tag::$tag"
+
+      - name: create Installer
+        run: iscc /dAppVersion="${{ steps.calculate-tag-version.outputs.tag }}" SpeckleStructuralSuiteInstaller.iss
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          tag_name: ${{ steps.calculate-tag-version.outputs.tag }}
+          release_name: Speckle Structural Suite Installer ${{ steps.calculate-tag-version.outputs.tag }}
+          body: |
+            Automated release of Speckle Structural Suite Installer
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}  
+          asset_path: ./SpeckleStructuralSuite.exe
+          asset_name: SpeckleStructuralSuite.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
