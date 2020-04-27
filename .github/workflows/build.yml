@@ -6,7 +6,7 @@ on:
       - '*.*'
 
 env:
-  INSTALLER_VERSION: 0.13.5
+  INSTALLER_VERSION: 0.13.6
 
 jobs:
   downloadSpeckleGSA:
