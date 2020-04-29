@@ -4,6 +4,10 @@ on:
       - 'master'
     tags-ignore:
       - '*.*'
+    paths:
+      - '.github/workflows/build.yml'
+      - 'Assets/**'
+      - 'SpeckleStructuralSuiteInstaller.iss'
 
 env:
   INSTALLER_VERSION: 0.13.6
