@@ -10,7 +10,7 @@ on:
       - 'SpeckleStructuralSuiteInstaller.iss'
 
 env:
-  INSTALLER_VERSION: 0.13.6
+  INSTALLER_VERSION: 0.14.0
 
 jobs:
   downloadSpeckleGSA:
