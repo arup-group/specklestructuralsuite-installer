@@ -40,4 +40,4 @@ To view the actions, go to the CI/CD settings at https://github.com/arup-group/s
 
 ## Notes
 
-SpeckleStructuralSuite installer is maintained by [Nic Burgers](https://gitlab.arup.com/Nic.Burgers).
+SpeckleStructuralSuite installer is maintained by [Nic Burgers](https://github.com/nic-burgers-arup).
