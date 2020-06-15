@@ -17,7 +17,7 @@ jobs:
     name: Download SpeckleGSA
     runs-on: windows-latest
     steps:
-      - name: Download SpeckleGSA latest release
+      - name: Download the latest SpeckleGSA from GitHub
         run: |
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
           $assets_url = Invoke-RestMethod -Method Get -Headers @{"Authorization" = "token $env:GITHUB_TOKEN"} -Uri https://api.github.com/repos/arup-group/specklegsa/releases/latest | Select -Expand assets | Select -Expand url
@@ -33,7 +33,7 @@ jobs:
           path: 'SpeckleGSA'
   
   downloadSpeckleCoreGeometry:
-    name: Download the speckle core geometry from appveyor
+    name: Download the latest speckle core geometry from GitHub
     runs-on: windows-latest
     steps:
       - name: Download SpeckleCoreGeometry latest release
@@ -55,15 +55,11 @@ jobs:
     steps:
       - name: Download SpeckleCoreGeometry master branch
         run: |
-          $jobId = Invoke-RestMethod -Method Get -Uri "$env:PROJECTS_URI" | Select -expand build | Select -Expand jobs | Select -Expand jobId
-          $artifact = Invoke-RestMethod -Method Get -Uri "$env:BUILD_JOBS_URI/$jobId/artifacts" 
-          $artifactName = $artifact | where name -eq "Release" | Select -Expand fileName
-          Invoke-WebRequest -Uri "$env:BUILD_JOBS_URI/$jobId/artifacts/$artifactName" -OutFile "$env:GITHUB_WORKSPACE\SpeckleStructural.zip"
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          $assets_url = Invoke-RestMethod -Method Get -Uri https://api.github.com/repos/speckleworks/SpeckleStructural/releases/latest | Select -Expand assets | Select -Expand url
+          Invoke-WebRequest -Headers @{"accept" = "application/octet-stream"} -Uri $assets_url -OutFile SpeckleStructural.zip
           7z x -o"$env:GITHUB_WORKSPACE\SpeckleStructural" "$env:GITHUB_WORKSPACE\SpeckleStructural.zip" -r -aoa 
-        env:
-          PROJECTS_URI: https://ci.appveyor.com/api/projects/speckleworks/specklestructural/branch/master
-          BUILD_JOBS_URI: https://ci.appveyor.com/api/buildjobs
-      
+
       - name: Upload SpeckleStructural to build pipeline
         uses: actions/upload-artifact@v2-preview
         with:
