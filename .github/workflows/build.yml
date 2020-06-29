@@ -107,7 +107,7 @@ jobs:
           tag_name: ${{ steps.calculate-tag-version.outputs.tag }}
           release_name: Speckle Structural Suite Installer ${{ steps.calculate-tag-version.outputs.tag }}
           body: |
-            Automated release of Speckle Structural Suite Installer containing the latest released versions of SpeckleGSA and SpeckleStructural
+            Automated release of Speckle Structural Suite Installer containing the latest released versions of SpeckleGSA, SpeckleCoreGeometry and SpeckleStructural
           draft: false
           prerelease: false
 
