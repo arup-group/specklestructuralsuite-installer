@@ -7,6 +7,7 @@
 #define SpeckleFolder "{localappdata}\Speckle"
 #define SpeckleStructuralSuiteFolder "{localappdata}\SpeckleStructuralSuite"
 #define AppExeName "SpeckleStructuralSuite.exe"
+#define AppVersion "0.0.1"
 
 [Setup]
 AppId={{C1D0E622-B491-46BD-99ED-A6A516496CA8}
@@ -60,3 +61,6 @@ Source: "SpeckleStructural\*"; DestDir: "{localappdata}\SpeckleKits\SpeckleStruc
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{group}\SpeckleGSA"; Filename: "{localappdata}\SpeckleGSA\SpeckleGSAUI.exe"
+
+[InstallDelete]
+Type: files; Name: "{localappdata}\SpeckleKits\SpeckleStructural\*.*"
