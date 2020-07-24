@@ -2,8 +2,8 @@
 #define GsaVersion GetFileVersion("SpeckleGSA\SpeckleGSA.dll")
 #define CoreGeometryVersion  GetFileVersion("SpeckleCoreGeometry\SpeckleCoreGeometry.dll")
 #define SpeckleStructuralVersion  GetFileVersion("SpeckleStructural\SpeckleStructural.dll")
-#define AppPublisher "Speckle"
-#define AppURL "http://torstrweb01/SpeckleGSA/"
+#define AppPublisher "Arup"
+#define AppURL "https://arup-group.github.io/speckleGSA/"
 #define SpeckleFolder "{localappdata}\Speckle"
 #define SpeckleStructuralSuiteFolder "{localappdata}\SpeckleStructuralSuite"
 #define AppExeName "SpeckleStructuralSuite.exe"
